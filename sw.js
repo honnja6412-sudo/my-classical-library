@@ -1,4 +1,4 @@
-const CACHE='classical-library-v13-shell-1';
+const CACHE='classical-library-v14-shell-1';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('classical-library-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim()))});
