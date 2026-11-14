@@ -1,0 +1,460 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>My Classical Library v1.7 検索改善テスト版</title><meta name="theme-color" content="#182b45"><meta name="description" content="クラシックCD・DVD・Blu-rayの所有盤管理"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon-192.png"><style>:root{font-family:system-ui,'Yu Gothic',sans-serif;color:#202a38;background:#f3f5f8}*{box-sizing:border-box}body{margin:0}header{background:#182b45;color:white;padding:22px max(18px,calc((100% - 1100px)/2))}header h1{margin:0;font-size:23px}header small{color:#c6d4e4}main{max-width:1100px;margin:auto;padding:20px}nav{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}button,.btn{cursor:pointer;border:1px solid #cad2dd;background:white;color:#23364c;padding:10px 14px;border-radius:9px;font-size:14px}button.primary{background:#225d99;color:white;border-color:#225d99}button:disabled{opacity:.5;cursor:wait}.tab.active{background:#225d99;color:white}section{background:white;padding:20px;border:1px solid #dce2e9;border-radius:14px;margin-bottom:15px}h2{font-size:19px;margin:0 0 14px}h3{font-size:16px;margin:14px 0 9px}.muted,small{color:#657386}label{display:block;font-size:13px;font-weight:650;margin:10px 0 4px}input,select,textarea{width:100%;border:1px solid #bfc9d5;border-radius:8px;padding:10px;font:inherit;background:white}textarea{min-height:72px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}.three{grid-template-columns:repeat(3,minmax(0,1fr))}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.hidden{display:none!important}.card{border:1px solid #dce2e9;border-radius:10px;padding:12px;margin:10px 0}.result{cursor:pointer}.result:hover{background:#f1f6fc}.pill{display:inline-block;background:#eaf1f9;border-radius:20px;padding:3px 8px;font-size:12px}.cover{width:100px;height:100px;object-fit:contain;background:#edf0f3;border-radius:8px}.item{display:flex;gap:12px;align-items:flex-start}.item .content{flex:1;min-width:0}.stats{display:flex;gap:12px;flex-wrap:wrap}.stat{padding:12px;background:#eef3f8;border-radius:9px;min-width:130px}.stat strong{display:block;font-size:23px}.notice{background:#fff8e8;padding:12px;border-radius:9px;font-size:13px}.disc{border-left:3px solid #8faaca;padding-left:12px;margin:12px 0}.work{margin:9px 0;padding:8px;background:#f2f6fa;border-radius:7px}.movement{margin-left:15px;padding-top:3px;font-size:13px}.track{padding:4px 0;border-bottom:1px solid #edf0f4;font-size:13px}.danger{color:#a42c34}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.toolbar input{flex:1;min-width:170px}#message{margin:10px 0;color:#225d99;font-weight:600}.imagebox{display:flex;gap:12px;flex-wrap:wrap}.imagebox img{width:110px;height:110px;object-fit:contain;background:#eee}.subtle{font-size:12px;color:#657386}details{margin-top:12px}summary{cursor:pointer;font-weight:600}@media(max-width:650px){main{padding:12px}section{padding:14px}.grid,.three{grid-template-columns:1fr}header{padding:18px}.cover{width:76px;height:76px}} .work-toggle{display:block;width:100%;text-align:left;background:transparent;border:0;padding:0;color:inherit;font-weight:700}.work-toggle:hover{text-decoration:underline}.work-toggle:focus-visible{outline:2px solid #225d99}.work .movement-list[hidden]{display:none}.work .movement-list{margin-top:5px}.work .work-heading{display:flex;gap:6px;align-items:center}.work .chevron{font-size:12px;color:#53647b}.work .work-meta{font-size:12px;color:#657386}.work .movement{line-height:1.5}.work{margin:9px 0;padding:9px;background:#f2f6fa;border-radius:7px} .owner-result{border:1px solid #dce2e9;border-radius:10px;padding:12px;margin:10px 0}.owner-result strong{display:block}.owner-status{font-weight:700;color:#225d99}.owner-status.exact{color:#187044}.owner-meta{font-size:13px;color:#53647b;margin-top:4px}.owner-empty{padding:12px;background:#fff8e8;border-radius:8px}.owner-search{position:sticky;top:0;background:white;padding:6px 0;z-index:2}@media(max-width:650px){header h1{font-size:20px}button,.btn{min-height:43px}nav button{flex:1 1 auto} .owner-result{padding:14px}input,select{font-size:16px} .stats{gap:6px}.stat{min-width:100px;padding:9px}} </style></head><body><header><h1>♫ My Classical Library <small>v1.7 検索改善テスト版</small></h1><small>クラシックCD・DVD・Blu-ray・BOX・録音／映像コレクション管理</small></header><main><nav><button class="tab active" data-tab="library">コレクション</button><button class="tab" data-tab="owner">所有確認</button><button class="tab" data-tab="register">新規登録</button><button class="tab" data-tab="lookup">規格番号検索</button><button class="tab" data-tab="backup">バックアップ</button><button class="tab" data-tab="v17review">v1.7候補確認</button><button class="tab" data-tab="handoff">データ引き継ぎ</button><button class="tab" data-tab="diagnostics">保存診断</button></nav><div id="message" role="status"></div><div id="library"><section><h2>所有コレクション</h2><div class="stats"><div class="stat"><strong id="albumCount">0</strong>CD・映像作品・BOX</div><div class="stat"><strong id="discCount">0</strong>ディスク合計</div><div class="stat"><strong id="workCount">0</strong>収録トラック</div></div><label>コレクションを検索</label><div class="grid"><div><label>メディア別</label><select id="mediaFilter"><option value="">すべて</option><option>CD</option><option>DVD</option><option>Blu-ray</option></select></div><div><label>検索</label><input id="filter" placeholder="曲名・指揮者・作曲家・出演者・演出家・レーベル・規格番号"></div></div><div class="actions"><button id="fillComposers">既存データの作曲家を補完（確認付き）</button></div><p class="subtle">作曲家・指揮者・作品名で絞り込めます。自動補完は候補が明確な場合のみ実施し、既存の入力を上書きしません。</p><div class="actions"><button id="hierarchyToggle">作品・楽章表示：ON</button><button id="expandAllWorks">全楽章を表示</button><button id="collapseAllWorks">全楽章を閉じる</button></div><div id="items"></div></section></div><div id="owner" class="hidden"><section><h2>外出先で所有盤を確認</h2><p class="notice">v1.5：HTTPSのWebサイトとして設置するとホーム画面への追加・オフライン起動ができます。所有データは端末ごとに保存されます。バックアップ画面からGoogleドライブで手動同期できます。</p><p class="muted">規格番号・バーコード・作曲家・作品・指揮者などから所有盤を探します。検索対象は、この端末に保存または読み込んだデータです。</p><div class="owner-search"><label for="ownerQuery">CDの背表紙や商品情報を入力</label><input id="ownerQuery" autocomplete="off" placeholder="例：415 124-2 / ブルックナー 8 / ジュリーニ"><div class="actions"><button id="ownerClear">検索を消す</button><button id="ownerBackup">JSONを読み込む</button></div></div><p id="ownerCount" class="subtle"></p><div id="ownerResults" aria-live="polite"></div><p class="notice">重要：この版には端末間の自動同期機能はありません。バックアップ画面からGoogleドライブで手動同期できます。Windowsの「バックアップ」で保存したJSONをAndroidの「バックアップ」から読み込むと、その時点の所有リストを確認できます。読み込みは端末内データを置き換えます。スマートフォン側に独自の登録データがある場合は、先にバックアップしてください。外出先での確認は取り込んだ時点のデータに限られます。</p></section></div><div id="register" class="hidden"><section><h2 id="formTitle">作品を登録</h2><p class="muted">まずは基本情報だけで保存できます。BOXの各ディスクの曲目は後から追加・修正できます。</p><div class="grid"><div><label>メディア形式</label><select id="mediaType"><option value="CD">CD</option><option value="DVD">DVD</option><option value="Blu-ray">Blu-ray</option></select></div><div><label>登録種別</label><select id="kind"><option value="single">通常盤・複数枚組</option><option value="box">BOXセット</option></select></div><div><label>枚数</label><input id="discNumber" type="number" min="1" max="500" value="1"></div></div><label>アルバム・BOX名 *</label><input id="title" placeholder="例：Mozart Live 1978"><div class="grid"><div><label>作曲家（複数は「／」区切り）</label><input id="composer" placeholder="例：ブルックナー"></div><div><label>主な指揮者</label><input id="conductor" placeholder="例：ジュリーニ"></div><div><label>主な演奏団体・出演者</label><input id="ensemble" placeholder="例：ウィーン・フィル"></div><div><label>レーベル</label><input id="label" placeholder="例：Philips"></div><div><label>規格番号</label><input id="catno" placeholder="例：PHCP-1234"><button type="button" id="quickCatalogSearchInline" style="margin-top:7px">この番号で候補を検索</button></div><div><label>バーコード</label><input id="barcode" inputmode="numeric" placeholder="EAN / UPC"></div><div><label>発売年</label><input id="year" placeholder="例：1998"></div><div><label>収録時間（映像作品・任意）</label><input id="duration" placeholder="例：145分"></div><div><label>購入価格（円）</label><input id="price" type="number" min="0" placeholder="任意"></div></div><div class="actions"><button type="button" class="primary" id="quickCatalogSearch">入力した規格番号から候補を検索</button></div><p class="subtle">規格番号を入力して上のボタンを押すと、候補確認画面でそのまま検索します。候補の確認だけでは保存されません。</p><div class="notice"><b>かんたん登録：</b>アルバム名だけでも保存できます。規格番号を入力したら「規格番号から探す」で候補を検索できます。BOXは収録曲を後日追加できます。</div><details id="videoExtra"><summary>映像作品の追加情報（DVD・Blu-ray）</summary><div class="grid"><div><label>演出家・映像監督</label><input id="director" placeholder="例：フランコ・ゼッフィレッリ"></div><div><label>出演者・配役</label><textarea id="cast" placeholder="例：歌手名（役名）"></textarea></div><div><label>劇場・会場</label><input id="venue" placeholder="例：バイロイト祝祭劇場"></div><div><label>映像・音声仕様</label><input id="avSpecs" placeholder="例：16:9 / PCM Stereo / DTS-HD"></div></div></details><h3>ジャケット写真</h3><p class="subtle">一覧の「画像を探す」でCover Art Archiveを検索できます。手持ちの写真は上書き確認なしに変更しません。</p><div class="grid"><div><label>表ジャケット</label><input id="front" type="file" accept="image/*" capture="environment"></div><div><label>裏ジャケット・曲目表</label><input id="back" type="file" accept="image/*" capture="environment"></div></div><div class="imagebox" id="previews"></div><p class="subtle">画像は端末内で縮小保存します。写真は保存できますが、画像からの文字の自動読取りは未対応です。棚写真の一括認識は今後の開発対象です。</p><label>メモ・感想</label><textarea id="notes" placeholder="音質、演奏評、購入店など"></textarea><h3>登録用JSONを一括追加（v1.6）</h3><p class="notice">ChatGPT等で作成した登録用JSONを選択し、内容を確認してからコレクションに追加します。<b>既存の登録データは置き換えません。</b> 同じ規格番号・バーコードの候補は確認できます。読み込み前にJSONバックアップを推奨します。</p><label for="addRecordsJSON">登録用JSONファイル</label><input id="addRecordsJSON" type="file" accept=".json,application/json"><div id="addRecordsPreview" class="subtle" role="status">ファイルを選択すると追加候補を表示します。</div><div class="actions"><button type="button" id="addRecordsCommit" class="primary" disabled>確認した作品を追加</button><button type="button" id="addRecordsCancel">選択を取り消す</button></div><h3>収録内容（任意）</h3><p class="notice">BOX編集：ディスクを切り替えても入力内容を保持します。最後に「保存する」を押すと、すべてのディスクの変更をまとめて保存します。</p><label>収録先ディスク</label><select id="trackDisc"><option value="1">Disc 1</option></select><p class="subtle">1行に1曲・1録音を入力してください。例：ベートーヴェン | 交響曲第5番 | クライバー | ウィーン・フィル | 1974</p><div id="discProgress" class="subtle" aria-live="polite"></div><div class="actions"><button type="button" id="prevDisc">← 前のDisc</button><button type="button" id="nextDisc" class="primary">次のDisc →</button><button type="button" id="saveDraft">入力途中を一時保存</button><button type="button" id="restoreDraft">一時保存から復元</button></div><p class="subtle">一時保存はこの端末・このブラウザ内のみです。正式な「保存する」も随時利用してください。</p><textarea id="manualTracks" rows="7" placeholder="作曲家 | 曲名 | 指揮者 | 演奏団体 | 録音年"></textarea><details open><summary>作品・楽章を分けて登録（作品・楽章の階層登録）</summary><p class="subtle">作品ごとに1行、その下の楽章は「- 」で始めます。作品行は「作品名 | 作曲家 | 指揮者 | 演奏団体 | 録音年」の順です。作品が複数のディスクにまたがる場合は、それぞれのDiscに同じ作品名を入力できます。</p><textarea id="structuredWorks" rows="8" placeholder="交響曲第8番 ハ短調 | ブルックナー | ジュリーニ | ウィーン・フィル | 1984&#10;- 第1楽章 Allegro moderato&#10;- 第2楽章 Scherzo&#10;交響曲第9番 | ベートーヴェン&#10;- 第1楽章 Allegro ma non troppo"></textarea><p class="subtle">従来の「収録内容」とは別に保存します。既存の曲目は自動変換・削除されません。ディスク切替時にも入力を保持します。</p></details><details id="bulkBox"><summary>BOX全体の曲目を一括入力（v1.5）</summary><p class="notice">「Disc 1」の行でディスクを区切り、各行に「作曲家 | 曲名 | 指揮者 | 演奏団体 | 録音年」を入力します。作品・楽章は「作品: 作品名 | 作曲家 | 指揮者 | 演奏団体 | 録音年」の下に「- 第1楽章」のように記入します。</p><textarea id="bulkText" rows="12" placeholder="Disc 1&#10;ブルックナー | 交響曲第8番 | ジュリーニ | ウィーン・フィル | 1984&#10;Disc 2&#10;作品: 交響曲第5番 | ベートーヴェン | クライバー | ウィーン・フィル | 1974&#10;- 第1楽章 Allegro con brio"></textarea><div class="actions"><button type="button" id="bulkApply" class="primary">一括入力を各Discへ反映</button><button type="button" id="bulkExport">現在の入力を一括欄に表示</button></div><p id="bulkResult" class="subtle" aria-live="polite"></p></details><div class="actions"><button class="primary" id="save">保存する</button><button id="clear">入力をクリア</button><button id="lookupFromForm">規格番号から探す</button><button id="saveNext">保存して次のCDを登録</button></div></section></div><div id="lookup" class="hidden"><section><h2>CD・映像作品を探す（国内盤・海外盤）</h2><p class="muted">国内盤・海外盤ともMusicBrainzで検索し、一部の確認済みデータを補完します。候補を選択すると登録できます。</p><div class="grid"><div><label>検索方法</label><select id="lookupType"><option value="catno">規格番号</option><option value="barcode">バーコード</option><option value="release">アルバム名</option></select></div><div><label>検索文字</label><input id="lookupValue" placeholder="例：478 1234"></div></div><div class="actions"><button class="primary" id="search">検索する</button><button id="scan">カメラでバーコードを読む（対応端末）</button></div><p class="notice">国内盤の補完データは現在テストDVD1点のみです。海外盤もMusicBrainzで検索できます。その他はMusicBrainzで検索します。オンライン検索にはネット接続が必要です。ローカルファイルで通信が制限される場合やデータが見つからない場合は手動登録をご利用ください。</p><div id="results"></div></section></div><div id="v17review" class="hidden"><section><h2>v1.7 規格番号から候補を確認</h2><p class="notice"><b>登録前確認：</b>候補の曲目を確認し、基本情報を必要に応じて修正してから新規登録できます。登録ボタンと最終確認を押すまでは保存しません。既存盤は上書きせず、Google Driveへ自動同期もしません。</p><label for="v17searchType">検索方法</label><select id="v17searchType"><option value="catno">規格番号</option><option value="barcode">バーコード（JAN / EAN / UPC）</option><option value="release">アルバム名</option></select><label for="v17catalog">検索文字</label><div class="toolbar"><input id="v17catalog" placeholder="例：CZS 7 62951 2"><button id="v17search" class="primary">候補を検索</button></div><p class="subtle">規格番号はハイフン・空白の違いを考慮して再検索します。候補がなければバーコードやアルバム名でも検索してください。候補の表示だけでは保存されません。</p><div id="v17status" role="status" class="subtle"></div><div id="v17matches"></div><div id="v17alternatives" class="actions hidden"><button type="button" id="v17tryBarcode">バーコードで探す</button><button type="button" id="v17tryTitle">アルバム名で探す</button><button type="button" id="v17manual">手入力で登録する</button></div><div id="v17details"></div></section></div><div id="handoff" class="hidden"><section><h2>正式版データの引き継ぎ（確認付き）</h2><p class="notice">旧版の保存キーとは別の専用領域に引き継ぎます。保存直後と再起動後の一致を「保存診断」で確認できます。</p><p class="notice">この画面では、JSONを選択しても保存データは変わりません。内容・現在の状態を照合し、確認ボタンを押した場合にのみ、このテスト版のコレクションを置き換えます。正式版HTMLやGoogle Driveには書き込みません。</p><label for="handoffFile">正式版から保存したJSONバックアップ</label><input type="file" id="handoffFile" accept=".json,application/json"><div id="handoffReport" role="status" class="card">まだファイルを選択していません。</div><div class="actions"><button id="handoffApply" class="primary" disabled>確認したバックアップをこのテスト版に読み込む</button><button id="handoffCancel">選択を取り消す</button></div><p class="subtle">読み込み直前に現在のテスト版データを自動退避します。操作前のJSONバックアップは別途保管してください。Google Drive同期はまだ行わないでください。</p></section></div><div id="diagnostics" class="hidden"><section><h2>保存・再起動診断（読み取り中心）</h2><p class="notice"><b>重要：</b>この検証版は旧版と異なる専用キー myclassical-v17-isolated を使用します。初期表示0件でも正常です。正式版のデータを利用するには「データ引き継ぎ」でバックアップを選択してください。</p><p class="notice">この画面はコレクションの登録・削除・復元やGoogle Drive同期を行いません。「診断用の書き込みテスト」では専用の小さな診断キーだけを使い、所有盤データには触れません。</p><div id="diagReport" class="card" style="white-space:pre-wrap;overflow-wrap:anywhere"></div><div class="actions"><button id="diagRefresh" class="primary">現在の保存状態を調べる</button><button id="diagProbe">診断用の書き込みテスト</button><button id="diagCopy">診断結果をコピー</button></div><p class="subtle">ブラウザでHTMLを直接開く場合、ファイルの場所・ブラウザ・保存領域の違いで別のデータが見えることがあります。診断結果は個人のファイルパスを含まない形式でコピーできます。</p></section></div><div id="backup" class="hidden"><section><h2>バックアップとデータ移行</h2><p>JSON形式で全データを保存・復元できます。CSVはExcelで開ける一覧です。</p><div class="actions"><button id="exportJSON" class="primary">JSONバックアップを保存</button><button id="exportCSV">CSV一覧を書き出す</button></div><h3>Googleドライブで端末間のデータを移す（手動同期）</h3>
+<p class="notice">WindowsとAndroidで同じGoogleアカウントにログインして使用します。「ドライブに保存」した後、別の端末で「ドライブから読み込む」を押してください。<b>自動同期ではありません。</b> 読み込みは端末内のコレクションを置き換えます。必ず最新データのある端末から保存してください。</p>
+<label for="oauthClientId">Google OAuth ウェブクライアントID</label><input id="oauthClientId" placeholder="数字-英数字.apps.googleusercontent.com" autocomplete="off" spellcheck="false"><p class="subtle">Google Cloudで作成した「クライアント ID」を貼り付けます。クライアントシークレットは入力しないでください。IDはこのブラウザにだけ保存します。</p>
+<div class="actions"><button id="googleConnect" class="primary">Googleアカウントに接続</button><button id="googleDisconnect">接続を解除</button></div>
+<p id="googleStatus" class="subtle" role="status">未接続</p>
+<p class="notice"><b>v1.7専用テスト同期：</b>正式版の同期ファイルは変更しません。テスト用の別ファイルに保存し、そこから読み込めます。最初にJSONバックアップを保存してください。</p><div class="actions"><button id="driveUpload" disabled class="primary">v1.7テスト用Driveへ保存・安全更新</button><button id="driveDownload" disabled>v1.7テスト用Driveから読み込む</button><button id="driveAudit" type="button" disabled class="primary">正式版Drive同期ファイルを調べる（読み取りのみ）</button></div><div id="driveAuditReport" class="card" role="status" aria-live="polite" style="white-space:pre-wrap">まだ診断していません。</div>
+<p class="subtle">テスト専用ファイル「my-classical-library-v17-test-sync.json」をGoogleドライブのマイドライブに作成・安全更新します。既存作品が完全一致し、追加作品だけがある場合に限り更新します。正式版の「my-classical-library-sync.json」は読み取り診断のみです。アプリが作成したファイルへのアクセス権（drive.file）のみを使います。既存の「My Classical Library」フォルダー内のJSONは変更しません。Google Drive APIが有効である必要があります。</p>
+<div id="driveInfo" class="subtle"></div><hr style="border:0;border-top:1px solid #e1e6ed;margin:20px 0"><label>JSONバックアップを読み込む</label><input type="file" accept=".json,application/json" id="importJSON"><p class="notice">現在の保存先は、このブラウザのv1.7専用ローカルストレージです。旧版とは別の保存キーを使用します。オンライン画像はURLのみ保存し、ネット接続がないと表示されません。撮影写真は容量を使います。画像が多いと容量不足になります。ブラウザデータの削除や端末変更で失われることがあります。定期的にJSONを保存してください。複数端末の自動同期には対応していません。</p></section></div></main><script>
+'use strict';const KEY='myclassical-v17-isolated', $=id=>document.getElementById(id);let hierarchical=true;let expandMovements=false;let discDraft={},workDraft={},records=[],editing=null,photos={front:'',back:''};try{records=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(records))records=[]}catch{records=[]}function notify(s){$('message').textContent=s;setTimeout(()=>{if($('message').textContent===s)$('message').textContent=''},6500)}function persist(){try{localStorage.setItem(KEY,JSON.stringify(records));return true}catch(e){notify('保存容量を超えました。画像を減らすか、JSONバックアップを保存してください。');return false}}function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function show(tab){for(const t of ['library','owner','register','lookup','backup','v17review','handoff','diagnostics'])$(t).classList.toggle('hidden',t!==tab);document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='library')render();if(tab==='owner')renderOwner();if(tab==='diagnostics')renderDiagnostics()}document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>show(b.dataset.tab));function normalize(s){return String(s||'').toLowerCase().normalize('NFKC')}const COMPOSERS=[['ブルックナー',/bruckner|ブルックナー/i,'アントン・ブルックナー'],['ベートーヴェン',/beethoven|ベートーヴェン|ベートーベン/i,'ルートヴィヒ・ヴァン・ベートーヴェン'],['マーラー',/mahler|マーラー/i,'グスタフ・マーラー'],['ブラームス',/brahms|ブラームス/i,'ヨハネス・ブラームス'],['モーツァルト',/mozart|モーツァルト/i,'ヴォルフガング・アマデウス・モーツァルト'],['シューベルト',/schubert|シューベルト/i,'フランツ・シューベルト'],['ドヴォルザーク',/dvorak|dvořák|ドヴォルザーク/i,'アントニン・ドヴォルザーク'],['チャイコフスキー',/tchaikovsky|tschaikowsky|チャイコフスキー/i,'ピョートル・チャイコフスキー'],['バッハ',/bach|バッハ/i,'ヨハン・ゼバスティアン・バッハ'],['ラヴェル',/ravel|ラヴェル/i,'モーリス・ラヴェル'],['ストラヴィンスキー',/stravinsky|stravinsk|ストラヴィンスキー/i,'イーゴリ・ストラヴィンスキー']];
+function guessComposer(text){let matches=COMPOSERS.filter(x=>x[1].test(text)).map(x=>x[2]);return matches.length===1?matches[0]:''}
+function composerOf(r){let cs=[...new Set((r.discs||[]).flatMap(d=>(d.tracks||[]).map(t=>t.composer).filter(Boolean)))];return cs.length?cs.join('／'):guessComposer(r.title||'')}
+function enrichTracks(r){for(let d of r.discs||[])for(let t of d.tracks||[]){if(!t.composer){let c=guessComposer(t.title||'')||r.composer||'';if(c&&!c.includes('／'))t.composer=c}}}
+function parseWorks(text){let out=[],current=null;for(const raw of String(text||'').split(/\r?\n/)){let line=raw.trim();if(!line)continue;if(/^[-－•・]\s*/.test(line)){if(current)current.movements.push(line.replace(/^[-－•・]\s*/,''));continue}let p=line.split('|').map(x=>x.trim());current={title:p[0]||'',composer:p[1]||'',conductor:p[2]||'',ensemble:p[3]||'',date:p[4]||'',movements:[]};if(current.title)out.push(current)}return out}function worksToText(works){return (works||[]).map(w=>[w.title||'',w.composer||'',w.conductor||'',w.ensemble||'',w.date||''].join(' | ').replace(/( \| )+$/,'')+'\n'+(w.movements||[]).map(m=>'- '+m).join('\n')).join('\n').trim()}function workKey(w){let c=normalize(w.composer||'').replace(/[\s・.．]/g,'');let t=normalize(w.title||'').replace(/[\s・.．:：\-－「」『』]/g,'');return c+'|'+t}
+function duplicateWork(t,w){let a=normalize(t.title||'').replace(/[\s・.．:：\-－「」『』]/g,'');let b=normalize(w.title||'').replace(/[\s・.．:：\-－「」『』]/g,'');if(!a||!b||a!==b)return false;let c=normalize(t.composer||'').replace(/[\s・.．]/g,'');let d=normalize(w.composer||'').replace(/[\s・.．]/g,'');return !c||!d||c===d||c.includes(d)||d.includes(c)}
+function workMarkup(d){let structured=d.works||[];let manual=trackHierarchy((d.tracks||[]).filter(t=>!structured.some(w=>duplicateWork(t,w))));let all=[...structured,...manual];return all.map((w,i)=>{let id='work-'+String(d.number)+'-'+String(i);let has=(w.movements||[]).length>0;return `<div class="work"><div class="work-heading">${has?`<button type="button" class="work-toggle" data-work-toggle="1" aria-expanded="${expandMovements}" title="楽章を開閉"><span class="chevron">${expandMovements?'▼':'▶'}</span> ${esc(w.composer)} ${esc(w.title)} <span class="subtle">(${w.movements.length}楽章)</span></button>`:`<strong>${esc(w.composer)} ${esc(w.title)}</strong>`}</div><div class="work-meta">${esc(w.conductor)} ${esc(w.ensemble)} ${esc(w.date)}</div>${has?`<div class="movement-list" ${expandMovements?'':'hidden'}>${w.movements.map(m=>`<div class="movement">↳ ${esc(m)}</div>`).join('')}</div>`:''}</div>`}).join('')}
+function boxComposerSummary(r){let c=(r.composer||composerOf(r)||'').split(/[／/,、]+/).map(x=>x.trim()).filter(Boolean);if(r.kind==='box'&&c.length>3)return c.slice(0,3).join('／')+' ほか（'+c.length+'名）';return c.join('／')||'作曲家未設定'}
+function render(){let term=normalize($('filter').value);$('albumCount').textContent=records.length;$('discCount').textContent=records.reduce((a,r)=>a+(r.discs?.length||0),0);$('workCount').textContent=records.reduce((a,r)=>a+(r.discs||[]).reduce((b,d)=>b+((d.tracks?.length||0)+(d.works?.length||0)),0),0);let arr=records.filter(r=>normalize(JSON.stringify(r)).includes(term)&&(!$('mediaFilter').value||(r.mediaType||'CD')===$('mediaFilter').value));$('items').innerHTML=arr.length?arr.map(r=>`<div class="card item"><img class="cover" src="${esc(r.front||'')}" alt="ジャケット"><div class="content"><b>${esc(r.title)}</b> <span class="pill">${r.kind==='box'?'BOX':(r.mediaType||'CD')}・${r.discs?.length||0}枚</span> <span class="subtle">曲目登録 ${((r.discs||[]).filter(d=>((d.tracks||[]).length||(d.works||[]).length))).length}/${r.discs?.length||0}枚</span><div class="muted"><b>${esc(boxComposerSummary(r))}</b> ${esc(r.conductor||'')} ${esc(r.ensemble||'')}</div><div class="muted">${esc(r.label)} ${esc(r.catno)} ${esc(r.year)}</div><div class="subtle">${esc(r.director||'')} ${esc(r.cast||'')} ${esc(r.venue||'')} ${esc(r.notes)}</div><div class="actions"><button data-act="view" data-id="${esc(r.id)}">収録曲を見る</button><button data-act="cover" data-id="${esc(r.id)}">画像を探す</button><button data-act="edit" data-id="${esc(r.id)}">編集</button><button data-act="delete" data-id="${esc(r.id)}">削除</button></div><div id="detail-${esc(r.id)}"></div></div></div>`).join(''):'<p class="muted">該当するCDはありません。「新規登録」から始めてください。</p>'}function reset(){editing=null;discDraft={};workDraft={};lastDisc=1;photos={front:'',back:''};for(let id of ['title','label','catno','barcode','year','duration','price','notes','manualTracks','structuredWorks','composer','conductor','ensemble','director','cast','venue','avSpecs'])$(id).value='';$('discNumber').value=1;$('kind').value='single';$('mediaType').value='CD';syncDiscOptions();$('front').value='';$('back').value='';$('previews').innerHTML='';$('formTitle').textContent='作品を登録'}$('clear').onclick=reset;$('filter').oninput=render;$('mediaFilter').onchange=render;function parseManual(t){return t.split('\n').filter(s=>s.trim()).map(s=>{let p=s.split('|').map(x=>x.trim());return {title:p[1]||p[0]||'',composer:p.length>1?p[0]:'',conductor:p[2]||'',ensemble:p[3]||'',date:p[4]||''}})}function fillManual(r){return(r.discs||[]).flatMap(d=>(d.tracks||[]).map(t=>[t.composer||'',t.title||'',t.conductor||'',t.ensemble||'',t.date||''].join(' | '))).join('\n')}function loadRecord(r){reset();editing=r.id;for(let id of ['title','label','catno','barcode','year','duration','price','notes','composer','conductor','ensemble','director','cast','venue','avSpecs'])$(id).value=r[id]??'';if(!r.composer)$('composer').value=composerOf(r);$('kind').value=r.kind;$('mediaType').value=r.mediaType||'CD';$('discNumber').value=r.discs.length;syncDiscOptions();photos={front:r.front||'',back:r.back||''};preview();discDraft={};workDraft={};(r.discs||[]).forEach(d=>{discDraft[d.number]=tracksToText(d.tracks||[]);workDraft[d.number]=worksToText(d.works||[])});$('trackDisc').value='1';lastDisc=1;$('manualTracks').value=discDraft[1]||'';$('structuredWorks').value=workDraft[1]||'';updateDiscProgress();$('formTitle').textContent='CDを編集';show('register')}function preview(){$('previews').innerHTML=['front','back'].filter(k=>photos[k]).map(k=>`<div><img src="${photos[k]}" alt="${k}"><div class="subtle">${k==='front'?'表':'裏'}</div></div>`).join('')}function shrink(file){return new Promise((resolve,reject)=>{let reader=new FileReader();reader.onerror=reject;reader.onload=()=>{let im=new Image();im.onload=()=>{let c=document.createElement('canvas'),scale=Math.min(1,850/Math.max(im.width,im.height));c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.68))};im.onerror=reject;im.src=reader.result};reader.readAsDataURL(file)})}for(const k of ['front','back'])$(k).onchange=async e=>{if(e.target.files[0]){try{photos[k]=await shrink(e.target.files[0]);preview()}catch{notify('画像を読み込めませんでした')}}};let lastDisc=1;
+function tracksToText(ts){return(ts||[]).map(t=>[t.composer||'',t.title||'',t.conductor||'',t.ensemble||'',t.date||''].join(' | ')).join('\n')}
+function stashDisc(){if($('trackDisc').options.length)discDraft[lastDisc]=$('manualTracks').value;workDraft[lastDisc]=$('structuredWorks').value}
+function updateDiscProgress(){let n=Number($('discNumber').value)||1;let done=0,tracks=0;for(let i=1;i<=n;i++){let t=discDraft[i]||'';let w=workDraft[i]||'';if(t.trim()||w.trim()){done++;tracks+=t.split('\n').filter(x=>x.trim()).length+parseWorks(w).length}}$('discProgress').textContent='収録内容入力済み：'+done+' / '+n+'枚（'+tracks+'行）。空欄のディスクは未登録のまま保存できます。'}
+function syncDiscOptions(){let n=Math.min(500,Math.max(1,Number($('discNumber').value)||1));let select=$('trackDisc'),old=Math.min(n,Number(select.value)||1);select.innerHTML=Array.from({length:n},(_,i)=>`<option value="${i+1}">Disc ${i+1}</option>`).join('');select.value=String(old);lastDisc=old;updateDiscProgress()}
+$('discNumber').addEventListener('change',()=>{stashDisc();syncDiscOptions()});
+$('trackDisc').addEventListener('change',()=>{discDraft[lastDisc]=$('manualTracks').value;workDraft[lastDisc]=$('structuredWorks').value;lastDisc=Number($('trackDisc').value);$('manualTracks').value=discDraft[lastDisc]||'';$('structuredWorks').value=workDraft[lastDisc]||'';updateDiscProgress()});
+const DRAFT_KEY='myclassical-v14-box-draft';
+function changeDisc(delta){stashDisc();let next=Number($('trackDisc').value)+delta,n=Number($('discNumber').value);if(next<1||next>n)return;$('trackDisc').value=String(next);lastDisc=next;$('manualTracks').value=discDraft[next]||'';$('structuredWorks').value=workDraft[next]||'';updateDiscProgress()}
+$('prevDisc').onclick=()=>changeDisc(-1);$('nextDisc').onclick=()=>changeDisc(1);
+$('saveDraft').onclick=()=>{stashDisc();try{localStorage.setItem(DRAFT_KEY,JSON.stringify({editing,title:$('title').value,discNumber:$('discNumber').value,discDraft,workDraft,savedAt:new Date().toISOString()}));notify('入力途中をこの端末に一時保存しました（正式登録ではありません）')}catch(e){notify('一時保存できませんでした：'+e.message)}};
+$('restoreDraft').onclick=()=>{let d;try{d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null')}catch{}if(!d)return notify('一時保存はありません');if(!confirm('一時保存（'+new Date(d.savedAt).toLocaleString('ja-JP')+'）から曲目を復元します。現在の曲目入力は置き換わります。よろしいですか？'))return;if(d.editing!==editing)return notify('別の作品の一時保存です。元の作品を編集してから復元してください');$('discNumber').value=d.discNumber;discDraft=d.discDraft||{};workDraft=d.workDraft||{};syncDiscOptions();lastDisc=1;$('trackDisc').value='1';$('manualTracks').value=discDraft[1]||'';$('structuredWorks').value=workDraft[1]||'';updateDiscProgress();notify('一時保存の曲目を復元しました。正式保存には「保存する」を押してください')};
+function parseBulk(text){let tracks={},works={},disc=0,seen=false;for(const raw of text.split(/\r?\n/)){const line=raw.trim();if(!line)continue;let m=line.match(/^(?:disc|disk|ディスク|cd)\s*[:：#-]?\s*(\d+)\s*[:：]?$/i);if(m){disc=Number(m[1]);if(disc<1||disc>500)throw Error('Disc番号は1〜500にしてください');seen=true;tracks[disc]??=[];works[disc]??=[];continue}if(!seen)throw Error('最初に「Disc 1」の行が必要です');if(/^作品\s*[:：]/.test(line)){let x=line.replace(/^作品\s*[:：]\s*/,'').split('|').map(t=>t.trim());works[disc].push({title:x[0]||'',composer:x[1]||'',conductor:x[2]||'',ensemble:x[3]||'',date:x[4]||'',movements:[]});continue}if(/^[-－•・]\s*/.test(line)&&works[disc].length){works[disc][works[disc].length-1].movements.push(line.replace(/^[-－•・]\s*/,''));continue}tracks[disc].push(line)}if(!seen)throw Error('Discの区切りが見つかりません');return {tracks,works,discMax:Math.max(...Object.keys(tracks).map(Number))}}
+$('bulkApply').onclick=()=>{let parsed;try{parsed=parseBulk($('bulkText').value)}catch(e){$('bulkResult').textContent=e.message;return}stashDisc();let count=Object.keys(parsed.tracks).length,n=Math.max(Number($('discNumber').value),parsed.discMax);if(n>500)return notify('ディスク数は500枚以内です');if(!confirm(count+'ディスク分の入力を反映します。指定されたDiscの現在の曲目入力は置き換わります。未指定Discは維持します。よろしいですか？'))return;for(const [k,v] of Object.entries(parsed.tracks)){discDraft[k]=v.join('\n');workDraft[k]=worksToText(parsed.works[k]||[])}$('discNumber').value=n;syncDiscOptions();$('manualTracks').value=discDraft[lastDisc]||'';$('structuredWorks').value=workDraft[lastDisc]||'';updateDiscProgress();$('bulkResult').textContent=count+'ディスク分を反映しました。「保存する」で正式に登録してください。'};
+$('bulkExport').onclick=()=>{stashDisc();let n=Number($('discNumber').value),parts=[];for(let i=1;i<=n;i++){parts.push('Disc '+i);if(discDraft[i])parts.push(discDraft[i]);let ws=parseWorks(workDraft[i]||'');for(const w of ws){parts.push('作品: '+[w.title,w.composer,w.conductor,w.ensemble,w.date].join(' | ').replace(/( \| )+$/,''));for(const m of w.movements)parts.push('- '+m)}}$('bulkText').value=parts.join('\n');$('bulkResult').textContent='現在の入力を一括欄に表示しました。コピーして編集できます。'};
+$('manualTracks').addEventListener('input',()=>{discDraft[lastDisc]=$('manualTracks').value;updateDiscProgress()});$('structuredWorks').addEventListener('input',()=>{workDraft[lastDisc]=$('structuredWorks').value;updateDiscProgress()});
+// v1.6: additive JSON import, separate from backup restore.
+let pendingAddRecords=[];
+function candidateDuplicate(r){return records.find(x=>(r.barcode&&x.barcode&&String(r.barcode).trim()===String(x.barcode).trim())||(r.catno&&x.catno&&normalize(r.catno).replace(/[\s-]/g,'')===normalize(x.catno).replace(/[\s-]/g,'')&&(!r.label||!x.label||normalize(r.label)===normalize(x.label))))}
+function validateAddRecord(r){if(!r||typeof r!=='object'||Array.isArray(r)||typeof r.title!=='string'||!r.title.trim()||!Array.isArray(r.discs)||r.discs.length<1||r.discs.length>500)throw Error('タイトルまたはディスク構成が不正です');return {...r,id:String(Date.now())+'-'+Math.random().toString(36).slice(2),title:r.title.trim(),mediaType:['CD','DVD','Blu-ray'].includes(r.mediaType)?r.mediaType:'CD',kind:r.kind==='box'?'box':'single',discs:r.discs.map((d,i)=>{if(!d||typeof d!=='object'||!Array.isArray(d.tracks||[])||!Array.isArray(d.works||[]))throw Error('Disc '+(i+1)+' の曲目形式が不正です');return {number:i+1,tracks:(d.tracks||[]).map(t=>({title:String(t.title||''),composer:String(t.composer||''),conductor:String(t.conductor||''),ensemble:String(t.ensemble||''),date:String(t.date||'')})),works:(d.works||[]).map(w=>({title:String(w.title||''),composer:String(w.composer||''),conductor:String(w.conductor||''),ensemble:String(w.ensemble||''),date:String(w.date||''),movements:Array.isArray(w.movements)?w.movements.map(String):[]}))}}),front:typeof r.front==='string'?r.front:'',back:typeof r.back==='string'?r.back:'',updated:new Date().toISOString()}}
+function clearAddRecords(){pendingAddRecords=[];$('addRecordsJSON').value='';$('addRecordsPreview').textContent='ファイルを選択すると追加候補を表示します。';$('addRecordsCommit').disabled=true}
+$('addRecordsCancel').onclick=clearAddRecords;
+$('addRecordsJSON').onchange=async e=>{let file=e.target.files?.[0];if(!file)return;pendingAddRecords=[];$('addRecordsPreview').textContent='読み込み中…';$('addRecordsCommit').disabled=true;try{if(file.size>10*1024*1024)throw Error('ファイルが大きすぎます（10MBまで）');let data=JSON.parse(await file.text());let arr=Array.isArray(data)?data:Array.isArray(data.records)?data.records:[data];if(!arr.length||arr.length>500)throw Error('1〜500作品のJSONを選択してください');pendingAddRecords=arr.map(validateAddRecord);let duplicates=pendingAddRecords.filter(candidateDuplicate);let lines=pendingAddRecords.slice(0,30).map(r=>'・'+r.title+'（'+r.discs.length+'枚）'+(candidateDuplicate(r)?'【既存候補あり】':'')).join('\n');$('addRecordsPreview').textContent='追加候補 '+pendingAddRecords.length+'作品／既存候補 '+duplicates.length+'作品\n'+lines+(pendingAddRecords.length>30?'\n…ほか':'');$('addRecordsPreview').style.whiteSpace='pre-wrap';$('addRecordsCommit').disabled=false}catch(err){pendingAddRecords=[];$('addRecordsPreview').textContent='読み込み不可：'+err.message;$('addRecordsCommit').disabled=true}};
+$('addRecordsCommit').onclick=()=>{if(!pendingAddRecords.length)return;let duplicates=pendingAddRecords.filter(candidateDuplicate);let msg='新しい作品を'+pendingAddRecords.length+'件追加します。現在の'+records.length+'件は維持します。';if(duplicates.length)msg+='\n\n既存と規格番号・バーコードが重複する候補が'+duplicates.length+'件あります。重複候補は追加せずスキップします。';msg+='\n\n続けますか？';if(!confirm(msg))return;let unique=[],skipped=0;for(let r of pendingAddRecords){let collision=candidateDuplicate(r)||unique.some(x=>(r.barcode&&x.barcode&&r.barcode===x.barcode)||(r.catno&&x.catno&&normalize(r.catno).replace(/[\s-]/g,'')===normalize(x.catno).replace(/[\s-]/g,'')&&(!r.label||!x.label||normalize(r.label)===normalize(x.label))));if(collision){skipped++;continue}unique.push(r)}if(!unique.length){notify('追加対象がありません。重複候補は追加しませんでした。');return}let old=records;records=[...unique,...records];if(!persist()){records=old;return}clearAddRecords();render();show('library');notify(unique.length+'作品を追加しました（重複候補 '+skipped+'件はスキップ）。既存作品は維持されています。')};
+$('title').addEventListener('input',()=>{$('title').style.borderColor='';$('title').removeAttribute('aria-invalid')});function saveRecord(next=false){let title=$('title').value.trim();if(!title){show('register');$('title').focus();$('title').style.borderColor='#b12d35';$('title').setAttribute('aria-invalid','true');alert('「アルバム・BOX名」は必須です。入力してから保存してください。');return}let n=Number($('discNumber').value);if(!Number.isInteger(n)||n<1||n>500)return notify('枚数は1〜500の範囲で入力してください');let duplicate=records.find(r=>r.id!==editing&&(($('catno').value.trim()&&normalize(r.catno)===normalize($('catno').value.trim())&&normalize(r.label)===normalize($('label').value.trim()))||($('barcode').value.trim()&&r.barcode===$('barcode').value.trim())));if(duplicate&&!confirm('同じ規格番号またはバーコードの登録があります：'+duplicate.title+'。続けますか？'))return;stashDisc();let prev=records.find(r=>r.id===editing),discs=Array.from({length:n},(_,i)=>({number:i+1,tracks:parseManual(discDraft[i+1]||''),works:parseWorks(workDraft[i+1]||'')}));let r={...prev,id:editing||String(Date.now())+'-'+Math.random().toString(36).slice(2),kind:$('kind').value,mediaType:$('mediaType').value,title,label:$('label').value.trim(),catno:$('catno').value.trim(),barcode:$('barcode').value.trim(),year:$('year').value.trim(),duration:$('duration').value.trim(),director:$('director').value.trim(),cast:$('cast').value.trim(),venue:$('venue').value.trim(),avSpecs:$('avSpecs').value.trim(),price:$('price').value.trim(),notes:$('notes').value.trim(),composer:$('composer').value.trim()||guessComposer(title),conductor:$('conductor').value.trim(),ensemble:$('ensemble').value.trim(),front:photos.front,back:photos.back,discs,updated:new Date().toISOString()};enrichTracks(r);if(prev){let i=records.indexOf(prev);records[i]=r}else records.unshift(r);if(persist()){try{let draft=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');if(draft&&draft.editing===editing)localStorage.removeItem(DRAFT_KEY)}catch{}reset();show(next?'register':'library');notify(next?'保存しました。次の作品を登録できます':'作品を保存しました')}}$('fillComposers').onclick=()=>{let candidates=records.filter(r=>!r.composer&&(composerOf(r)||guessComposer(r.title||'')));if(!candidates.length)return notify('補完できる作曲家はありません。手入力で設定してください。');let list=candidates.map(r=>'・'+r.title+' → '+(composerOf(r)||guessComposer(r.title))).join('\n');if(!confirm('次の'+candidates.length+'件に作曲家を補完します。既存値は変更しません。\n'+list))return;let old=JSON.stringify(records);for(let r of candidates){r.composer=composerOf(r)||guessComposer(r.title);enrichTracks(r)}if(!persist())records=JSON.parse(old);render();notify('作曲家を補完しました')};$('save').onclick=()=>saveRecord(false);$('saveNext').onclick=()=>saveRecord(true);function trackHierarchy(ts){
+ let out=[],cur=null;
+ for(const t of ts||[]){let title=String(t.title||'').trim();let movement=/^(?:[-–—]|(?:第\s*[一二三四五六七八九十0-9]+\s*楽章)|(?:[IVX]+|[1-9])\s*[.．:)：-]\s*|(?:Allegro|Adagio|Andante|Largo|Scherzo|Finale|Presto|Larghetto|Menuetto)\b)/i.test(title);
+ if(movement&&cur){cur.movements.push(title);continue}
+ cur={title,composer:t.composer||'',conductor:t.conductor||'',ensemble:t.ensemble||'',date:t.date||'',movements:[]};out.push(cur)
+ }return out
+}
+function details(r){return(r.discs||[]).map(d=>`<div class="disc"><b>Disc ${d.number}</b>${hierarchical?workMarkup(d):((d.works||[]).map(w=>`<div class="track">${esc(w.composer)} ${esc(w.title)}${(w.movements||[]).map(m=>`<div class="movement">↳ ${esc(m)}</div>`).join('')}</div>`).join('')+(d.tracks||[]).filter(t=>!(d.works||[]).some(w=>duplicateWork(t,w))).map((t,i)=>`<div class="track">${i+1}. ${esc(t.composer)} ${esc(t.title)} <span class="muted">${esc(t.conductor)} ${esc(t.ensemble)} ${esc(t.date)}</span></div>`).join(''))||'<p class="muted">収録曲未登録</p>'}</div>`).join('')+(r.back?`<details><summary>裏ジャケットを見る</summary><img style="max-width:100%" src="${r.back}" alt="裏ジャケット"></details>`:'')}
+$('hierarchyToggle').onclick=()=>{hierarchical=!hierarchical;$('hierarchyToggle').textContent='作品・楽章表示：'+(hierarchical?'ON':'OFF');render()};
+function refreshExpanded(){document.querySelectorAll('.movement-list').forEach(el=>el.hidden=!expandMovements);document.querySelectorAll('button[data-work-toggle]').forEach(el=>{el.setAttribute('aria-expanded',String(expandMovements));let arrow=el.querySelector('.chevron');if(arrow)arrow.textContent=expandMovements?'▼':'▶'})}
+$('expandAllWorks').onclick=()=>{expandMovements=true;refreshExpanded()};
+$('collapseAllWorks').onclick=()=>{expandMovements=false;refreshExpanded()};
+document.addEventListener('click',e=>{let b=e.target.closest('button[data-work-toggle]');if(!b)return;let list=b.closest('.work')?.querySelector('.movement-list');if(!list)return;list.hidden=!list.hidden;b.setAttribute('aria-expanded',String(!list.hidden));let arrow=b.querySelector('.chevron');if(arrow)arrow.textContent=list.hidden?'▶':'▼'});
+ $('items').onclick=e=>{let b=e.target.closest('button[data-act]');if(!b)return;let r=records.find(x=>x.id===b.dataset.id);if(!r)return;if(b.dataset.act==='edit')loadRecord(r);if(b.dataset.act==='cover')findCover(r,b);if(b.dataset.act==='view'){let el=document.getElementById('detail-'+r.id);el.innerHTML=el.innerHTML?'':details(r)}if(b.dataset.act==='delete'&&confirm('「'+r.title+'」を削除しますか？')){{let before=records;records=records.filter(x=>x!==r);if(!persist())records=before;render()}}};function download(name,blob){let a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}$('exportJSON').onclick=()=>download('classical-library-av-backup-'+new Date().toISOString().slice(0,10)+'.json',new Blob([JSON.stringify({version:2,records},null,2)],{type:'application/json'}));function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}$('exportCSV').onclick=()=>{let rows=[['アルバム','メディア','種別','主な作曲家','主な指揮者','主な演奏団体','レーベル','規格番号','バーコード','発売年','枚数','収録時間','演出・監督','出演者・配役','劇場・会場','映像音声仕様','価格','Disc','作曲家','曲名','指揮者','演奏団体','録音日','メモ']];for(let r of records){for(let d of r.discs){for(let t of (d.tracks?.length?d.tracks:[{}]))rows.push([r.title,r.mediaType||'CD',r.kind,r.composer||composerOf(r),r.conductor||'',r.ensemble||'',r.label,r.catno,r.barcode,r.year,r.discs.length,r.duration||'',r.director||'',r.cast||'',r.venue||'',r.avSpecs||'',r.price,d.number,t.composer,t.title,t.conductor,t.ensemble,t.date,r.notes])}for(let w of d.works||[]){rows.push([r.title,r.mediaType||'CD',r.kind,r.composer||'',r.conductor||'',r.ensemble||'',r.label,r.catno,r.barcode,r.year,r.discs.length,r.duration||'',r.director||'',r.cast||'',r.venue||'',r.avSpecs||'',r.price,d.number,w.composer,w.title,w.conductor,w.ensemble,w.date,r.notes]);for(let m of w.movements||[])rows.push([r.title,r.mediaType||'CD',r.kind,r.composer||'',r.conductor||'',r.ensemble||'',r.label,r.catno,r.barcode,r.year,r.discs.length,r.duration||'',r.director||'',r.cast||'',r.venue||'',r.avSpecs||'',r.price,d.number,w.composer,'↳ '+m,w.conductor,w.ensemble,w.date,r.notes])}}download('classical-library-av.csv',new Blob(['\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}))};if($('migrateV02'))$('migrateV02').onclick=()=>{let old;try{old=JSON.parse(localStorage.getItem('myclassical-v02')||'[]')}catch{}if(!Array.isArray(old)||!old.length)return notify('このブラウザにv0.2のデータが見つかりません');let ids=new Set(records.map(r=>r.id));let additions=old.filter(r=>!ids.has(r.id));if(!additions.length)return notify('v0.2のデータは取り込み済みです');if(!confirm('v0.2から'+additions.length+'件を追加しますか？ 先にJSONバックアップを推奨します。'))return;let before=records;records=[...records,...additions];if(!persist())records=before;else{render();notify(additions.length+'件を取り込みました')}};$('importJSON').onchange=async e=>{try{let data=JSON.parse(await e.target.files[0].text()),arr=Array.isArray(data)?data:data.records;if(!Array.isArray(arr)||!arr.every(r=>r&&typeof r.title==='string'&&Array.isArray(r.discs)))throw Error();if(!confirm('現在のデータを読み込んだバックアップで置き換えます。よろしいですか？'))return;let old=records;records=arr;if(!persist())records=old;else{render();notify('バックアップを復元しました')}}catch{notify('有効なバックアップJSONではありません')}};
+
+function showVerifiedDVD(){
+ const dvd={composer:'アントン・ブルックナー',conductor:'ロヴロ・フォン・マタチッチ',ensemble:'NHK交響楽団',title:'NHKクラシカル マタチッチ指揮 1984年 NHK交響楽団 ブルックナー：交響曲第8番 ハ短調',mediaType:'DVD',kind:'single',label:'NHKクラシカル／NHKエンタープライズ',catno:'NSDS-13652',barcode:'4988066167768',year:'2009-10-23',duration:'83分',director:'',cast:'',venue:'NHKホール',avSpecs:'4:3／カラー／リニアPCMステレオ',price:'',notes:'1984年3月7日 NHKホールで収録。出典：紀伊國屋書店・タワーレコードの商品情報。',discs:[{number:1,tracks:[{composer:'アントン・ブルックナー',title:'交響曲第8番 ハ短調',conductor:'ロヴロ・フォン・マタチッチ',ensemble:'NHK交響楽団',date:'1984-03-07'}]}]};
+ $('results').innerHTML='<div class="card"><b>国内盤の確認済み候補（1件）</b><p>マタチッチ／ブルックナー：交響曲第8番（DVD）</p><p class="muted">NSDS-13652 · JAN 4988066167768 · 2009年発売</p><p class="subtle">商品情報を照合済み。登録前に内容をご確認ください。</p><div class="actions"><button class="primary" id="addVerifiedDVD">このDVDを登録</button><a class="btn" target="_blank" rel="noopener" href="https://www.kinokuniya.co.jp/f/dsg-10-4988066167768">商品情報を見る</a></div></div>';
+ $('addVerifiedDVD').onclick=()=>{const dup=records.find(r=>r.barcode===dvd.barcode||normalize(r.catno)===normalize(dvd.catno));if(dup&&!confirm('このDVDは登録済みの可能性があります。追加しますか？'))return;records.unshift({...dvd,id:String(Date.now())+'-'+Math.random().toString(36).slice(2),front:'',back:'',updated:new Date().toISOString()});if(persist()){show('library');notify('マタチッチのDVDを登録しました')}};
+}
+let lastReq=0;async function mb(url){let wait=Math.max(0,1150-(Date.now()-lastReq));if(wait)await new Promise(r=>setTimeout(r,wait));lastReq=Date.now();let res=await fetch(url,{headers:{Accept:'application/json'}});if(!res.ok)throw Error('HTTP '+res.status);return res.json()}function openCatalogReview(cat,autoSearch=true){
+ const value=String(cat||'').trim();if(!value){notify('規格番号を入力してください');$('catno').focus();return;}
+ $('v17searchType').value='catno';$('v17catalog').value=value;show('v17review');
+ $('v17status').textContent='';$('v17matches').replaceChildren();$('v17details').replaceChildren();$('v17alternatives').classList.add('hidden');
+ if(autoSearch)$('v17search').click();
+}
+$('quickCatalogSearch').onclick=()=>openCatalogReview($('catno').value);
+$('quickCatalogSearchInline').onclick=()=>openCatalogReview($('catno').value);
+$('lookupFromForm').onclick=()=>{
+ const cat=$('catno').value.trim();
+ if(cat){openCatalogReview(cat);return;}
+ $('lookupType').value=$('barcode').value?'barcode':'catno';$('lookupValue').value=$('barcode').value;show('lookup');
+};$('search').onclick=async()=>{let type=$('lookupType').value,q=$('lookupValue').value.trim();if(!q)return notify('検索文字を入力してください');if((type==='barcode'&&q.replace(/\D/g,'')==='4988066167768')||(type==='catno'&&q.replace(/[\s-]/g,'').toUpperCase()==='NSDS13652')){showVerifiedDVD();return;}let btn=$('search');btn.disabled=true;$('results').textContent='検索中…';try{let lucene=type+':"'+q.replace(/["\\]/g,' ').trim()+'"',data=await mb('https://musicbrainz.org/ws/2/release/?query='+encodeURIComponent(lucene)+'&fmt=json&limit=12');$('results').innerHTML=(data.releases||[]).length?(data.releases||[]).map(r=>`<div class="card result" data-mbid="${esc(r.id)}"><b>${esc(r.title)}</b><div class="muted">${esc(r['artist-credit']?.map(x=>x.name||'').join(' '))} · ${esc(r.date)} · ${esc(r.country)}</div><small>${esc((r['label-info']||[]).map(x=>(x.label?.name||'')+' '+(x['catalog-number']||'')).join(' / '))}</small><div><span class="pill">${esc(r['track-count']||'?')} tracks</span> <span class="pill">選択して詳細を取得</span></div></div>`).join(''):'<p>該当する候補がありません。表記を変えて再検索するか、手動登録してください。</p>'}catch(e){$('results').textContent='検索に失敗しました（'+e.message+'）。通信環境を確認するか、手動登録してください。'}finally{btn.disabled=false}};$('results').onclick=e=>{
+ if(!e.target.closest('[data-mbid]'))return;
+ if($('lookupType').value==='catno'){
+  openCatalogReview($('lookupValue').value);
+ }else{
+  show('v17review');
+  $('v17searchType').value=$('lookupType').value;$('v17catalog').value=$('lookupValue').value;$('v17search').click();
+ }
+};$('scan').onclick=async()=>{if(!('BarcodeDetector'in window)||!navigator.mediaDevices?.getUserMedia){notify('この環境はバーコード撮影に対応していません。番号を手入力してください。');return}let stream;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});let video=document.createElement('video');video.playsInline=true;video.autoplay=true;video.srcObject=stream;let dialog=document.createElement('div');dialog.style='position:fixed;inset:0;background:#000d;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;padding:20px';video.style='max-width:95vw;max-height:70vh';let stop=document.createElement('button');stop.textContent='撮影を終了';dialog.append(video,stop);document.body.append(dialog);let active=true;stop.onclick=()=>{active=false;stream.getTracks().forEach(t=>t.stop());dialog.remove()};await video.play();let detector=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']});while(active){let codes=await detector.detect(video);if(codes.length){$('lookupType').value='barcode';$('lookupValue').value=codes[0].rawValue;stop.click();notify('バーコードを読み取りました。「検索する」を押してください');break}await new Promise(r=>setTimeout(r,450))}}catch(e){notify('カメラを使用できません: '+e.message)}finally{if(stream&&(!document.querySelector('video')))stream.getTracks().forEach(t=>t.stop())}};
+async function findCover(r,button){
+ if(r.front&&!confirm('現在のジャケット写真があります。オンライン画像の候補を探しますか？\n※見つかっても、確認するまで写真は変更されません。'))return;
+ const old=button.textContent;button.disabled=true;button.textContent='画像を検索中…';
+ const panel=document.getElementById('detail-'+r.id);
+ const status=document.createElement('div');status.setAttribute('role','status');status.style='margin-top:12px;padding:12px;border:1px solid #c9d9ea;border-radius:8px;background:#f1f7ff;white-space:pre-wrap';
+ status.textContent='オンライン画像を検索しています。しばらくお待ちください…';panel.replaceChildren(status);
+ const progress=t=>{status.textContent=t};
+ try{
+  progress('MusicBrainzの登録情報を確認しています…');
+  let mbid=r.mbid||((r.notes||'').match(/MusicBrainz ID:\s*([0-9a-f-]{36})/i)||[])[1];
+  if(!mbid){
+   let q=r.barcode?'barcode:"'+r.barcode+'"':r.catno?'catno:"'+r.catno.replace(/"/g,'')+'"':'release:"'+r.title.replace(/"/g,'')+'"';
+   let data=await mb('https://musicbrainz.org/ws/2/release/?query='+encodeURIComponent(q)+'&fmt=json&limit=10');
+   let options=(data.releases||[]).filter(x=>!r.catno||!x['label-info']?.length||x['label-info'].some(y=>normalize(y['catalog-number']).replace(/[\s-]/g,'')===normalize(r.catno).replace(/[\s-]/g,'')));
+   if(!options.length)throw Error('該当するリリースが見つかりません');
+   if(options.length>1){let names=options.slice(0,8).map((x,i)=>(i+1)+': '+x.title+' / '+(x.date||'')+' / '+(x['label-info']||[]).map(z=>z['catalog-number']).join(',')).join('\n');let n=prompt('候補を確認し、番号を選んでください（キャンセル可）\n'+names,'1');if(!n)return;let ix=Number(n)-1;if(!Number.isInteger(ix)||ix<0||ix>=Math.min(options.length,8))throw Error('候補番号が不正です');mbid=options[ix].id}
+   else mbid=options[0].id;
+  }
+  progress('Cover Art Archiveで画像を検索しています…');
+  let res=await fetch('https://coverartarchive.org/release/'+encodeURIComponent(mbid),{headers:{Accept:'application/json'}});
+  if(!res.ok)throw Error('この盤のジャケット画像が登録されていません（HTTP '+res.status+'）');
+  let data=await res.json();let img=(data.images||[]).find(x=>x.front)||(data.images||[])[0];
+  if(!img)throw Error('画像が見つかりません');
+  let raw=img.thumbnails?.['250']||img.thumbnails?.small||img.image;
+  if(typeof raw!=='string'||!raw.trim())throw Error('画像URLが返されませんでした');
+  // Cover Art Archive may return http or protocol-relative image links.
+  let url;
+  try {url=new URL(raw, 'https://coverartarchive.org/');if(url.protocol==='http:')url.protocol='https:';if(url.protocol!=='https:')throw Error('unsupported protocol');url=url.href}
+  catch(e){throw Error('画像URLを解釈できませんでした: '+String(raw).slice(0,100))} 
+  let el=document.getElementById('detail-'+r.id);el.innerHTML='<div class="card"><b>オンライン画像候補（保存前の確認）</b><p class="subtle">画像は外部サイトから表示されます。CDと異なるジャケットなら保存しないでください。</p><img id="coverCandidate" alt="取得したジャケット候補" style="max-width:190px;max-height:230px;display:block;margin:10px 0"><div class="actions"><button id="useCover">この画像を使う</button><button id="cancelCover">キャンセル</button></div></div>';
+  el.querySelector('#coverCandidate').src=url;
+  el.querySelector('#coverCandidate').onerror=()=>{el.querySelector('#useCover').disabled=true;el.querySelector('#coverCandidate').replaceWith(document.createTextNode('画像の表示に失敗しました。外部サイトへのアクセスが制限されている可能性があります。画像は保存されません。'))};
+  el.querySelector('#cancelCover').onclick=()=>el.innerHTML='';
+  el.querySelector('#useCover').onclick=()=>{if(!confirm('このジャケット画像を登録しますか？\n既存の写真がある場合は置き換わります。'))return;let prev=r.front;r.front=url;r.mbid=mbid;r.coverSource='Cover Art Archive';if(!persist()){r.front=prev;return}render();notify('画像を登録しました。オンライン画像のためネット接続が必要です。')};
+ }catch(e){status.textContent='画像を取得できませんでした。\n'+(e.message==='Failed to fetch'?'通信が遮断されたか、外部サイトへの接続に失敗しました。':e.message)+'\n現在のジャケット写真は変更されていません。';status.style.background='#fff8e8';notify('画像検索が完了しませんでした。詳細はCDの下に表示しています。')}finally{button.disabled=false;button.textContent=old}
+}
+
+// v1.1: owner lookup; never mutates records.
+function ownerNorm(s){return String(s??'').normalize('NFKC').toLowerCase().replace(/[‐‑‒–—−]/g,'-').replace(/\s+/g,' ').trim()}
+function ownerCode(s){return ownerNorm(s).replace(/[^a-z0-9]/g,'')}
+function ownerTokens(s){return ownerNorm(s).split(/[\s　,、・／/|:：;；]+/).filter(Boolean)}
+function ownerFields(r){let works=(r.discs||[]).flatMap(d=>[...(d.works||[]).flatMap(w=>[w.title,w.composer,w.conductor,w.ensemble,w.date,...(w.movements||[])]),...(d.tracks||[]).flatMap(t=>[t.title,t.composer,t.conductor,t.ensemble,t.date])]);return [r.title,r.composer,r.conductor,r.ensemble,r.label,r.catno,r.barcode,r.notes,...works].filter(Boolean).join(' ')}
+function ownerMatch(r,q){let norm=ownerNorm(q),code=ownerCode(q);if(!norm)return null;let bar=ownerCode(r.barcode),cat=ownerCode(r.catno);if(code.length>=5&&((bar&&bar===code)||(cat&&cat===code)))return {score:100,status:'規格番号・バーコード一致',exact:true};let hay=ownerNorm(ownerFields(r)),tokens=ownerTokens(q);if(!tokens.length)return null;let found=tokens.filter(t=>hay.includes(t));if(found.length!==tokens.length){if(tokens.length===1&&code.length>=5&&((bar&&bar.includes(code))||(cat&&cat.includes(code))))return {score:65,status:'規格番号の部分一致',exact:false};return null}let score=20+tokens.length*8;let performers=[r.conductor,r.ensemble].filter(Boolean).map(ownerNorm);if(performers.some(v=>tokens.some(t=>v.includes(t))))score+=15;return {score,status:'登録情報に一致（同一録音とは限りません）',exact:false}}
+function renderOwner(){let target=$('ownerResults');if(!target)return;let q=$('ownerQuery').value.trim();$('ownerCount').textContent=records.length+'作品・'+records.reduce((n,r)=>n+(r.discs||[]).length,0)+'ディスクが検索対象です';if(!q){target.innerHTML='<p class="muted">規格番号や作曲家・作品名などを入力してください。例：415 124-2</p>';return}let found=records.map(r=>({r,m:ownerMatch(r,q)})).filter(x=>x.m).sort((a,b)=>b.m.score-a.m.score);target.innerHTML=found.length?found.map(({r,m})=>`<div class="owner-result"><div class="owner-status ${m.exact?'exact':''}">${esc(m.status)}</div><strong>${esc(r.title)}</strong><div class="owner-meta">${esc(r.composer||composerOf(r)||'')} ${esc(r.conductor||'')} ${esc(r.ensemble||'')}</div><div class="owner-meta">${esc(r.label||'')} ${esc(r.catno||'')} ${esc(r.barcode||'')} ／ ${esc(r.kind==='box'?'BOX':r.mediaType||'CD')} ${r.discs?.length||0}枚</div><details><summary>収録内容を見る</summary>${details(r)}</details></div>`).join(''):'<div class="owner-empty">一致する登録盤は見つかりませんでした。ただし、未登録盤や表記違い、BOX内の情報不足の可能性があります。未所有とは断定できません。</div>'}
+$('ownerQuery').oninput=renderOwner;
+$('ownerClear').onclick=()=>{$('ownerQuery').value='';renderOwner();$('ownerQuery').focus()};
+$('ownerBackup').onclick=()=>{show('backup');$('importJSON').focus()};
+// Installability and offline shell work only from a hosted secure origin, not content:// or file://.
+if(location.protocol==='https:'&&'serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+
+// Google Drive manual synchronization: OAuth token in memory, drive.file least-privilege scope.
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+const DRIVE_FILENAME='my-classical-library-sync.json';
+const DRIVE_TEST_FILENAME='my-classical-library-v17-test-sync.json';
+let driveToken='', driveTokenClient=null, driveBusy=false;
+const $gs=$('googleStatus');
+$('oauthClientId').value=localStorage.getItem('myclassical-oauth-client-id')||'';
+$('oauthClientId').addEventListener('change',()=>{
+  const id=$('oauthClientId').value.trim();
+  if(id && !/^[0-9]+-[a-zA-Z0-9_-]+\.apps\.googleusercontent\.com$/.test(id)){
+    driveStatus('クライアントIDの形式を確認してください。');return;
+  }
+  localStorage.setItem('myclassical-oauth-client-id',id);
+  driveToken='';driveTokenClient=null;driveControls();driveStatus('クライアントIDを保存しました。接続し直してください。');
+});
+function driveStatus(t){$gs.textContent=t;}
+function driveControls(){
+ $('driveUpload').disabled=!driveToken||driveBusy||records.length===0;$('driveDownload').disabled=!driveToken||driveBusy;$('driveAudit').disabled=!driveToken||driveBusy;
+ $('googleConnect').disabled=driveBusy;
+}
+function driveWait(ms){return new Promise(r=>setTimeout(r,ms))}
+function loadGIS(){return new Promise((resolve,reject)=>{
+ if(window.google?.accounts?.oauth2)return resolve();
+ const existing=document.querySelector('script[data-google-gis]');
+ if(existing){let n=0;let interval=setInterval(()=>{if(window.google?.accounts?.oauth2){clearInterval(interval);resolve()}else if(++n>100){clearInterval(interval);reject(Error('Google認証ライブラリを読み込めません'))}},100);return}
+ let sc=document.createElement('script');sc.src='https://accounts.google.com/gsi/client';sc.async=true;sc.dataset.googleGis='1';sc.onload=()=>resolve();sc.onerror=()=>reject(Error('Google認証ライブラリを読み込めません'));document.head.appendChild(sc);
+})}
+$('googleConnect').onclick=async()=>{
+ const id=$('oauthClientId').value.trim();
+ if(!/^[0-9]+-[a-zA-Z0-9_-]+\.apps\.googleusercontent\.com$/.test(id))return driveStatus('Google CloudのウェブクライアントIDを正しく入力してください。');
+ localStorage.setItem('myclassical-oauth-client-id',id);
+ try{
+  driveStatus('Google認証画面を準備しています…');await loadGIS();
+  driveTokenClient=google.accounts.oauth2.initTokenClient({client_id:id,scope:DRIVE_SCOPE,callback:(resp)=>{
+    if(resp.error||!resp.access_token){driveStatus('認証できませんでした：'+(resp.error||'トークンがありません'));return}
+    driveToken=resp.access_token;driveControls();driveStatus('Googleドライブに接続しました。操作する端末のデータを確認してください。');
+  },error_callback:e=>driveStatus('認証画面を完了できませんでした：'+(e.type||'不明なエラー'))});
+  driveTokenClient.requestAccessToken({prompt:'consent'});
+ }catch(e){driveStatus(e.message)}
+};
+$('googleDisconnect').onclick=()=>{
+ if(driveToken&&window.google?.accounts?.oauth2)google.accounts.oauth2.revoke(driveToken,()=>{});
+ driveToken='';driveTokenClient=null;driveControls();driveStatus('接続を解除しました。');
+};
+async function driveFetch(url,opts={}){
+ let res=await fetch(url,{...opts,headers:{Authorization:'Bearer '+driveToken,...(opts.headers||{})}});
+ if(!res.ok){let body=await res.text().catch(()=> '');if(res.status===401){driveToken='';driveControls()}
+ throw Error('Google Drive API '+res.status+'：'+body.slice(0,350))}
+ return res;
+}
+async function findSyncFile(filename=DRIVE_FILENAME){
+ const q="name = '"+filename+"' and trashed = false";
+ const url='https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q,fields:'nextPageToken,files(id,name,modifiedTime,size)',page_size:'100',orderBy:'modifiedTime desc'});
+ const data=await (await driveFetch(url)).json();return data.files?.[0]||null;
+}
+function safeSyncPayload(data){
+ const arr=Array.isArray(data)?data:data?.records;
+ if(!Array.isArray(arr)||!arr.every(r=>r&&typeof r.title==='string'&&Array.isArray(r.discs)))throw Error('ドライブのファイルが有効なコレクションJSONではありません');
+ return arr;
+}
+async function driveAction(action){
+ if(!driveToken||driveBusy)return;
+ driveBusy=true;driveControls();
+ try{
+  driveStatus('v1.7テスト専用ファイルを確認中…');
+  let file=await findSyncFile(DRIVE_TEST_FILENAME);
+  if(action==='upload'){
+   if(!records.length)throw Error('この端末が0件のため、空のデータはアップロードできません');
+   const payload=JSON.stringify({version:2,records,syncedAt:new Date().toISOString(),source:'My Classical Library v1.7 safe update test'},null,2);
+   const discs=records.reduce((n,r)=>n+(r.discs||[]).length,0);
+   const ids=records.map(r=>String(r.id||''));
+   if(ids.some(x=>!x)||new Set(ids).size!==ids.length)throw Error('ローカルの作品IDに欠落または重複があります。更新を停止しました。');
+   if(file){
+     driveStatus('Drive上の既存データと照合中…');
+     const remoteData=await (await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media')).json();
+     const remote=safeSyncPayload(remoteData);
+     if(!remote.length)throw Error('Driveのデータが空です。更新を停止しました。');
+     const remoteIds=remote.map(r=>String(r.id||''));
+     if(remoteIds.some(x=>!x)||new Set(remoteIds).size!==remoteIds.length)throw Error('Drive側の作品IDに欠落または重複があります。更新を停止しました。');
+     const localById=new Map(records.map(r=>[String(r.id),r]));
+     const missing=remote.filter(r=>!localById.has(String(r.id)));
+     const changed=remote.filter(r=>localById.has(String(r.id))&&JSON.stringify(localById.get(String(r.id)))!==JSON.stringify(r));
+     if(missing.length||changed.length)throw Error('Drive側にローカルと異なる既存作品があります（未収録'+missing.length+'件・内容差異'+changed.length+'件）。誤上書きを防ぐため更新を停止しました。双方のJSONバックアップを保管して確認してください。');
+     const additions=records.length-remote.length;
+     if(!additions)throw Error('Driveと同じ作品数で、既存作品の内容も一致しています。更新は不要です。');
+     if(!confirm('【テスト用Driveファイルを安全更新】\nDrive：'+remote.length+'作品\nWindows：'+records.length+'作品・'+discs+'枚\n追加作品：'+additions+'件\n\nDrive上の全既存作品がWindows側に変更なく存在することを確認しました。\n正式版同期ファイルは変更しません。\n\nWindowsのJSONバックアップを保存済みですか？'))return;
+     // Recheck immediately before updating to catch edits made during confirmation.
+     const latest=safeSyncPayload(await (await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media')).json());
+     if(JSON.stringify(latest)!==JSON.stringify(remote))throw Error('確認中にDriveの内容が変わりました。更新を停止しました。');
+     driveStatus('テスト専用ファイルを更新しています…');
+     await driveFetch('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(file.id)+'?uploadType=media',{method:'PATCH',headers:{'Content-Type':'application/json; charset=UTF-8'},body:payload});
+     const verified=safeSyncPayload(await (await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media')).json());
+     if(JSON.stringify(verified)!==JSON.stringify(records))throw Error('更新後の照合に失敗しました。WindowsのJSONバックアップを保持し、操作を中止してください。');
+     driveStatus('テスト用Driveを安全更新しました：'+records.length+'作品・'+discs+'枚。正式版の同期ファイルは変更していません。');
+   }else{
+     if(!confirm('【テスト用の新規ファイルを作成】\nこの端末：'+records.length+'作品・'+discs+'枚\n保存先：'+DRIVE_TEST_FILENAME+'\n\n正式版の同期ファイルは変更しません。\n事前にJSONバックアップを保存しましたか？'))return;
+     driveStatus('テスト専用ファイルを新規作成しています…');
+     const boundary='mcl'+Date.now();
+     const body='--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+JSON.stringify({name:DRIVE_TEST_FILENAME,mimeType:'application/json'})+'\r\n--'+boundary+'\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n'+payload+'\r\n--'+boundary+'--';
+     await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,modifiedTime',{method:'POST',headers:{'Content-Type':'multipart/related; boundary='+boundary},body});
+     driveStatus('テスト用Driveへ新規保存しました：'+records.length+'作品。正式版の同期ファイルは変更していません。');
+   }
+  }else{
+   if(!file)throw Error('v1.7テスト用同期ファイルがありません。先にテスト用Driveへ保存してください。');
+   const data=await (await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media')).json();
+   const incoming=safeSyncPayload(data);
+   if(!incoming.length)throw Error('空の同期ファイルは取り込めません');
+   const discs=incoming.reduce((n,r)=>n+(r.discs||[]).length,0);
+   if(!confirm('【v1.7テスト用データを読み込む】\nDrive：'+incoming.length+'作品・'+discs+'枚\nこの端末：'+records.length+'作品\n\nこの端末のv1.7専用データを置き換えます。正式版のデータには触れません。\n読み込み前に現在のJSONバックアップをダウンロードします。続けますか？'))return;
+   download('classical-library-before-v17-test-import-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json',new Blob([JSON.stringify({version:2,records},null,2)],{type:'application/json'}));
+   const before=records;records=incoming;
+   if(!persist()){records=before;throw Error('保存容量が不足しています。元のデータを維持しました。')}
+   render();renderOwner();driveStatus('テスト用Driveから読み込み完了：'+records.length+'作品。正式版の同期ファイルは変更していません。');
+  }
+ }catch(e){driveStatus('処理できませんでした：'+e.message)}
+ finally{driveBusy=false;driveControls()}
+}
+$('driveAudit').onclick=async()=>{
+ if(!driveToken||driveBusy)return;
+ driveBusy=true;driveControls();
+ const report=$('driveAuditReport');report.textContent='Google Driveの同期ファイルを読み取り中です…';
+ try{
+  const file=await findSyncFile();
+  const localDiscs=records.reduce((n,r)=>n+(r.discs||[]).length,0);
+  const localTracks=records.reduce((n,r)=>n+(r.discs||[]).reduce((m,d)=>m+(d.tracks||[]).length,0),0);
+  let lines=['この端末（v1.7）：'+records.length+'件・'+localDiscs+'枚・JSON内tracks '+localTracks+'件','同期ファイル名：'+DRIVE_FILENAME];
+  if(!file){lines.push('Google Drive：同期ファイルは見つかりませんでした。','※drive.file権限で参照できる範囲の結果です。');}
+  else{
+   lines.push('Google Drive：同期ファイルあり','更新日時：'+new Date(file.modifiedTime).toLocaleString('ja-JP'),'サイズ：'+(file.size||'不明')+'バイト');
+   const data=await (await driveFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(file.id)+'?alt=media')).json();
+   const incoming=safeSyncPayload(data);
+   const discs=incoming.reduce((n,r)=>n+(r.discs||[]).length,0);
+   const tracks=incoming.reduce((n,r)=>n+(r.discs||[]).reduce((m,d)=>m+(d.tracks||[]).length,0),0);
+   lines.push('Google Drive内：'+incoming.length+'件・'+discs+'枚・JSON内tracks '+tracks+'件');
+   lines.push('差異：'+(incoming.length===records.length&&discs===localDiscs&&tracks===localTracks?'件数・枚数・tracks件数は一致（内容の完全一致は未確認）':'件数・枚数・tracks件数のいずれかが異なります'));
+  }
+  lines.push('結果：読み取りのみ。Google Drive・この端末の所有盤データは変更していません。');
+  report.textContent=lines.join('\n');driveStatus('安全診断が完了しました。');
+ }catch(e){report.textContent='診断できませんでした：'+e.message+'\nGoogle Driveへの書き込みは行っていません。';driveStatus('診断できませんでした。');}
+ finally{driveBusy=false;driveControls();}
+};
+$('driveUpload').onclick=()=>driveAction('upload');
+$('driveDownload').onclick=()=>driveAction('download');
+driveControls();
+
+syncDiscOptions();render();
+// v1.7 candidate review. Does not write records or sync.
+const v17Esc = s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const v17Norm = s=>String(s??'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g,'');
+const v17Rules=[
+ [/(?:nocturne|夜想曲)\s*(?:no\.?\s*)?2\b.*\bop\.?\s*33\b/i,'ガブリエル・フォーレ','夜想曲第2番とOp.33'],
+ [/(?:nocturne|夜想曲)\s*(?:no\.?\s*)?4\b.*\bop\.?\s*36\b/i,'ガブリエル・フォーレ','夜想曲第4番とOp.36'],
+ [/(?:toccata)\b.*\bop\.?\s*7\b/i,'ロベルト・シューマン','トッカータとOp.7'],
+ [/(?:papillons)\b.*\bop\.?\s*2\b/i,'ロベルト・シューマン','蝶々とOp.2'],
+ [/(?:visions fugitives)\b.*\bop\.?\s*22\b/i,'セルゲイ・プロコフィエフ','束の間の幻影とOp.22']
+];
+function v17Composer(title,credit){
+ const existing=String(credit||'').trim();
+ if(existing&&existing!=='未判定')return {state:'既存情報（要現物照合）',name:existing};
+ const hits=v17Rules.filter(r=>r[0].test(String(title||'').normalize('NFKC')));
+ return hits.length===1?{state:'候補あり（未確定）',name:hits[0][1],reason:hits[0][2]}:{state:'未判定',name:'—'};
+}
+function v17ExistingMatches(release){
+ return records.filter(r=>(r.catno&&release.catno&&v17Norm(r.catno)===v17Norm(release.catno))||(r.barcode&&release.barcode&&v17Norm(r.barcode)===v17Norm(release.barcode)));
+}
+async function v17Fetch(url){const r=await fetch(url,{headers:{Accept:'application/json'}});if(!r.ok)throw Error('MusicBrainz HTTP '+r.status);return r.json()}
+let v17Candidates=[]; let v17Selected=null;
+$('v17catalog').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();$('v17search').click();}});
+// Search only: no collection or Drive writes. Throttle MusicBrainz requests.
+let v17LastRequest=0;
+async function v17SearchRequest(query){
+ const delay=Math.max(0,1200-(Date.now()-v17LastRequest));
+ if(delay)await new Promise(resolve=>setTimeout(resolve,delay));
+ v17LastRequest=Date.now();
+ return v17Fetch('https://musicbrainz.org/ws/2/release/?query='+encodeURIComponent(query)+'&fmt=json&limit=15');
+}
+function v17SearchQueries(type,value){
+ const q=String(value).replace(/["\\]/g,' ').trim();
+ if(type!=='catno')return [type+':"'+q+'"'];
+ const compact=q.normalize('NFKC').replace(/[\s\-‐‑‒–—−]/g,'');
+ const spaced=q.normalize('NFKC').replace(/[\-‐‑‒–—−]/g,' ').replace(/\s+/g,' ').trim();
+ return [...new Set([q,compact,spaced].filter(Boolean))].map(x=>'catno:"'+x+'"');
+}
+$('v17tryBarcode').onclick=()=>{$('v17searchType').value='barcode';$('v17catalog').value='';$('v17catalog').focus();};
+$('v17tryTitle').onclick=()=>{$('v17searchType').value='release';$('v17catalog').value='';$('v17catalog').focus();};
+$('v17manual').onclick=()=>{if($('v17searchType').value==='catno'&&!$('catno').value.trim())$('catno').value=$('v17catalog').value.trim();show('register');};
+$('v17searchType').onchange=()=>{$('v17matches').replaceChildren();$('v17details').replaceChildren();$('v17status').textContent='検索方法を変更しました。検索文字を入力してください。';};
+$('v17search').onclick=async()=>{
+ const cat=$('v17catalog').value.trim(),type=$('v17searchType').value;
+ if(!cat)return $('v17status').textContent='検索文字を入力してください';
+ const btn=$('v17search');btn.disabled=true;
+ $('v17status').textContent='MusicBrainzで検索中…';$('v17matches').replaceChildren();$('v17details').replaceChildren();$('v17alternatives').classList.add('hidden');v17Candidates=[];v17Selected=null;
+ try{
+   const queries=v17SearchQueries(type,cat);let error=null;
+   for(const query of queries){
+     let data;
+     try{data=await v17SearchRequest(query)}catch(e){error=e;break;}
+     const releases=data.releases||[];
+     if(releases.length){v17Candidates=releases.map(r=>({id:r.id,title:r.title,catno:(r['label-info']||[]).map(x=>x['catalog-number']).filter(Boolean).join(' / '),barcode:r.barcode||'',date:r.date||'',label:(r['label-info']||[]).map(x=>x.label?.name).filter(Boolean).join(' / ')}));break;}
+   }
+   if(error)throw error;
+   if(!v17Candidates.length){
+     $('v17status').textContent='候補は0件です。MusicBrainzに未登録の可能性があります。別の検索方法をお試しください。';
+     $('v17alternatives').classList.remove('hidden');return;
+   }
+   $('v17status').textContent=v17Candidates.length+'件の候補。規格番号・レーベル・バーコードを現物と照合してください。';
+   $('v17matches').innerHTML=v17Candidates.map((r,i)=>'<div class="card"><b>'+v17Esc(r.title)+'</b><p class="subtle">'+v17Esc(r.label)+' ／ '+v17Esc(r.catno)+' ／ '+v17Esc(r.barcode)+' ／ '+v17Esc(r.date)+'</p><button type="button" data-v17="'+i+'">この候補の曲目を確認</button></div>').join('');
+ }catch(e){$('v17status').textContent='検索に失敗しました：'+e.message+'。通信状態をご確認ください。';$('v17alternatives').classList.remove('hidden');}
+ finally{btn.disabled=false;}
+};
+
+$('v17matches').onclick=async e=>{
+ const b=e.target.closest('button[data-v17]');if(!b)return;const release=v17Candidates[Number(b.dataset.v17)];if(!release)return;
+ $('v17status').textContent='ディスクと曲目を取得中…';$('v17details').replaceChildren();
+ try{
+  const r=await v17Fetch('https://musicbrainz.org/ws/2/release/'+encodeURIComponent(release.id)+'?inc=recordings+artist-credits+labels&fmt=json');
+  const discs=(r.media||[]).filter(m=>m.tracks?.length);const count=discs.reduce((n,d)=>n+d.tracks.length,0);
+  const matches=v17ExistingMatches(release);
+   v17Selected={release:{...release,title:r.title||release.title},media:discs.map((d,i)=>({number:i+1,tracks:d.tracks.map(t=>({title:t.title||t.recording?.title||'',composer:'',conductor:'',ensemble:'',date:'',recordingMbid:t.recording?.id||'',source:'MusicBrainz（要確認）'}))})),count};
+  let html='<h3>'+v17Esc(r.title)+' ／ '+discs.length+'枚・'+count+'トラック</h3>';
+  html+='<p class="notice">'+(matches.length?'既存所有盤の識別子一致候補：'+matches.map(x=>v17Esc(x.title)).join('、'):'既存所有盤の識別子一致候補：0件（未所有の証明ではありません）')+'</p>';
+  html+='<p class="subtle">作品と録音は別概念です。同じ曲名でも異なる録音の場合があります。録音年は曲名から推定して確定しません。作曲者候補は限定規則による参考情報です。</p>';
+  discs.forEach((d,i)=>{html+='<details '+(i===discs.length-1?'open':'')+'><summary>Disc '+(d.position||i+1)+' ／ '+d.tracks.length+'トラック</summary>';
+   d.tracks.forEach((t,j)=>{const title=t.title||t.recording?.title||'',comp=v17Composer(title,'');html+='<div class="track">'+(t.position||j+1)+'. '+v17Esc(title)+'<div class="subtle">作曲者：'+v17Esc(comp.state)+' ／ '+v17Esc(comp.name)+(comp.reason?'（'+v17Esc(comp.reason)+'）':'')+'</div></div>'});html+='</details>'});
+  html+='<h3>登録前の基本情報確認・修正</h3><p class="subtle">曲目はMusicBrainzの表記のまま登録します。作曲者・演奏者・録音年は未確認のため空欄です。必要に応じて登録後に編集してください。</p>';
+   const fields=[['title','アルバム・BOX名'],['label','レーベル'],['catno','規格番号'],['barcode','バーコード'],['date','発売日・発売年'],['composer','主な作曲者（任意）'],['conductor','主な指揮者（任意）'],['ensemble','主な演奏者（任意）']];
+   html+='<div class="grid">'+fields.map(([key,label])=>'<div><label for="v17field-'+key+'">'+label+'</label><input id="v17field-'+key+'" value="'+v17Esc(release[key]||'')+'"></div>').join('')+'</div>';
+   html+='<div class="notice">既存所有盤と規格番号・バーコード・MusicBrainz IDが一致する場合は登録を停止します。登録後のGoogle Drive同期は別途手動で行ってください。</div><div class="actions"><button type="button" class="primary" id="v17commit">内容を確認して新規登録</button></div><div id="v17commitStatus" class="card" role="alert" aria-live="assertive" style="display:none;border-color:#c58b2d;background:#fff8e8;font-weight:600"></div>';
+  $('v17details').innerHTML=html;$('v17status').textContent='曲目を取得しました。内容を確認し、登録する場合のみ登録ボタンを押してください。';
+ }catch(e){$('v17status').textContent='詳細取得に失敗しました：'+e.message;}
+};
+
+ // Registration is explicit and append-only. Existing records are never overwritten.
+ $('v17details').addEventListener('click',e=>{
+  if(!e.target.closest('#v17commit'))return;
+  const selected=v17Selected;if(!selected)return notify('候補を再取得してください');
+  const media=selected.media;
+   const field=k=>($('v17field-'+k)?.value||'').trim();
+   const rel={...selected.release,title:field('title'),label:field('label'),catno:field('catno'),barcode:field('barcode'),date:field('date'),composer:field('composer'),conductor:field('conductor'),ensemble:field('ensemble')};
+   if(!rel.title)return notify('アルバム名を入力してください');
+   if(!rel.catno&&!rel.barcode)return notify('重複確認のため規格番号またはバーコードを入力してください');
+  if(!media.length||!selected.count)return notify('曲目が取得できていないため登録できません');
+  const normalizedCat=v17Norm(rel.catno);
+   const dup=records.filter(x=>x.mbid===rel.id||(rel.barcode&&x.barcode&&v17Norm(x.barcode)===v17Norm(rel.barcode))||(normalizedCat&&x.catno&&String(x.catno).split(/\s*\/\s*/).some(c=>v17Norm(c)===normalizedCat||v17Norm(c)===v17Norm(selected.release.catno))));
+  if(dup.length){
+   const message='このCDはすでに登録されています。重複登録を防ぐため、追加しませんでした。\n登録済み：'+[...new Set(dup.map(x=>x.title))].join('／')+'\n現在のコレクション：'+records.length+'件（変更なし）';
+   $('v17status').textContent=message;
+   const panel=$('v17commitStatus');if(panel){panel.textContent=message;panel.style.display='block';panel.style.whiteSpace='pre-wrap';panel.scrollIntoView({block:'nearest',behavior:'smooth'});}
+   return;
+  }
+  const summary=rel.title+'\n'+media.length+'枚・'+selected.count+'トラック\n規格番号：'+rel.catno+'\nレーベル：'+rel.label+'\n\n作曲者・演奏者・録音年は未確認のまま保存します。\n既存の'+records.length+'件は変更しません。\n\nこの盤を新規登録しますか？';
+  if(!confirm(summary)){const panel=$('v17commitStatus');if(panel){panel.textContent='登録をキャンセルしました。データに変更はありません。';panel.style.display='block';}return;}
+  // Copy raw MusicBrainz track titles without inferring uncertain composer/recording metadata.
+  const record={id:'v17-'+Date.now()+'-'+Math.random().toString(36).slice(2),mbid:rel.id,kind:media.length>1?'box':'single',mediaType:'CD',title:rel.title,label:rel.label,catno:rel.catno,barcode:rel.barcode,year:rel.date,composer:rel.composer||'',conductor:rel.conductor||'',ensemble:rel.ensemble||'',front:'',back:'',notes:'MusicBrainzから曲目候補を登録。曲目ごとの作曲者・演奏者・録音情報は未照合。',discs:JSON.parse(JSON.stringify(media)),updated:new Date().toISOString()};
+  const before=JSON.stringify(records);
+  try{
+   records.unshift(record);
+   const serialized=JSON.stringify(records);
+   localStorage.setItem(KEY,serialized);
+   const verified=localStorage.getItem(KEY);
+   const restored=JSON.parse(verified||'null');
+   if(verified!==serialized||!Array.isArray(restored)||restored.length!==records.length||restored[0]?.id!==record.id)throw Error('保存後の照合に失敗');
+   v17Selected=null;show('library');notify('新規登録・保存直後の照合が成功しました。HTMLを開き直して件数をご確認ください。');
+  }catch(err){
+   records=JSON.parse(before);
+   try{localStorage.setItem(KEY,before)}catch{}
+   $('v17status').textContent='登録できませんでした：'+err.message+'。既存データは維持しました。';const panel=$('v17commitStatus');if(panel){panel.textContent=$('v17status').textContent;panel.style.display='block';}
+  }
+ });
+// v1.7 explicit, preflighted local handoff; no network or Drive operations.
+let handoffPending=null;
+const V17_COMMIT='myclassical-v17-commit-proof';
+const V17_ORIGIN='myclassical-v17-origin-proof';
+function v17Proof(){try{const p=JSON.parse(localStorage.getItem(V17_COMMIT)||'null');if(!p)return '引き継ぎ未実施';const raw=localStorage.getItem(KEY);const count=raw?handoffCounts(JSON.parse(raw)):null;return (count&&count.items===p.items&&count.discs===p.discs&&count.tracks===p.tracks?'一致':'不一致')+' / '+p.items+'件・'+p.discs+'枚・'+p.tracks+'件 / 保存日時 '+p.at}catch(e){return '確認エラー：'+e.message}}
+
+const handoffCounts=arr=>({items:arr.length,discs:arr.reduce((n,r)=>n+(r.discs?.length||0),0),tracks:arr.reduce((n,r)=>n+(r.discs||[]).reduce((k,d)=>k+(d.tracks?.length||0),0),0)});
+const handoffIdentity=r=>String(r.catno||'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g,'');
+function handoffClear(){handoffPending=null;$('handoffApply').disabled=true;$('handoffFile').value='';$('handoffReport').textContent='まだファイルを選択していません。'}
+$('handoffCancel').onclick=handoffClear;
+$('handoffFile').onchange=async e=>{
+ handoffPending=null;$('handoffApply').disabled=true;
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+  const raw=JSON.parse(await f.text());const arr=raw.records;
+  if(raw.version!==2||!Array.isArray(arr)||!arr.every(r=>r&&typeof r.title==='string'&&Array.isArray(r.discs)&&r.discs.every(d=>Array.isArray(d.tracks||[]))))throw Error('正式版version 2のバックアップではありません');
+  const c=handoffCounts(arr),current=handoffCounts(records);
+  const gulda=arr.find(r=>/Friedrich Gulda spielt Beethoven/.test(r.title));
+  const uniqueIds=new Set(arr.map(r=>r.id));
+  const uniqueCats=new Set(arr.map(handoffIdentity).filter(Boolean));
+  const ok=c.items===5&&c.discs===20&&!!gulda&&gulda.discs.length===9&&uniqueIds.size===arr.length&&uniqueCats.size===arr.map(handoffIdentity).filter(Boolean).length;
+  const report=[`選択ファイル：${f.name}`,`バックアップ：${c.items}件・${c.discs}枚・JSON内tracks ${c.tracks}件`,`現在のテスト版：${current.items}件・${current.discs}枚・JSON内tracks ${current.tracks}件`,`グルダ全集：${gulda?'あり（'+gulda.discs.length+'枚）':'なし'}`,`登録タイトル：${arr.map(r=>r.title).join(' ／ ')}`,ok?'照合結果：引き継ぎ可能（手動確定待ち）':'照合結果：期待する正式版と一致しないため読み込み禁止'];
+  $('handoffReport').textContent=report.join('\n');$('handoffReport').style.whiteSpace='pre-wrap';
+  if(ok){handoffPending={arr,c};$('handoffApply').disabled=false;}
+ }catch(err){$('handoffReport').textContent='読み込みできません：'+err.message;}
+};
+$('handoffApply').onclick=()=>{
+ if(!handoffPending)return;
+ const {arr,c}=handoffPending;
+ if(!confirm(`現在のテスト版コレクションを正式版バックアップ（${c.items}件・${c.discs}枚）で置き換えます。\n正式版とGoogle Driveは変更しません。\n続行しますか？`))return;
+ const before=JSON.stringify(records);
+ try{
+  // Dedicated rollback slot, separate from production backup.
+  localStorage.setItem('myclassical-v17-before-handoff',before);
+  const serialized=JSON.stringify(arr);
+  localStorage.setItem(KEY,serialized);
+  if(localStorage.getItem(KEY)!==serialized)throw Error('保存内容が一致しません');
+  records=JSON.parse(localStorage.getItem(KEY));
+  const after=handoffCounts(records);
+  if(after.items!==c.items||after.discs!==c.discs||after.tracks!==c.tracks)throw Error('保存後の照合が一致しません');
+  localStorage.setItem(V17_COMMIT,JSON.stringify({...after,at:new Date().toISOString()}));
+  handoffClear();show('library');notify('隔離したv1.7保存領域への引き継ぎと直後の照合が成功しました。再起動確認は未実施です。');
+ }catch(err){try{localStorage.setItem(KEY,before);records=JSON.parse(before)}catch{}notify('引き継ぎを中止・復元しました：'+err.message);}
+};
+
+// Diagnostic-only code: never changes collection key or Google Drive.
+const DIAG_KEY='myclassical-v17-diagnostic-probe';
+let lastDiagnostic='';
+function renderDiagnostics(){
+ const counts=handoffCounts(records);let stored='読み取り失敗',probe='なし',status='利用不可';
+ try{const raw=localStorage.getItem(KEY);if(raw===null)stored='保存データなし';else{const parsed=JSON.parse(raw);stored=Array.isArray(parsed)?`${handoffCounts(parsed).items}件・${handoffCounts(parsed).discs}枚・JSON内tracks ${handoffCounts(parsed).tracks}件`:'配列以外のデータ';}status='利用可能';probe=localStorage.getItem(DIAG_KEY)||'まだ実施していません';}catch(e){status='エラー：'+e.message}
+ const protocol=location.protocol;
+ const fileName=(()=>{try{return decodeURIComponent(location.pathname.split('/').pop()||'不明')}catch{return '不明'}})();
+ lastDiagnostic=[`画面：v1.7 登録検証版`,`ファイル名：${fileName}`,`実行方式：${protocol==='file:'?'ローカルHTML（file:）':protocol}`,`ブラウザ識別：${navigator.userAgent.slice(0,135)}`,`localStorage：${status}`,`起動時読み込み済みデータ：${counts.items}件・${counts.discs}枚・JSON内tracks ${counts.tracks}件`,`現在の保存キー(${KEY})：${stored}`,`引き継ぎ保存証明：${v17Proof()}`,`診断専用キー：${probe}`,`確認時刻：${new Date().toLocaleString('ja-JP')}`].join('\n');
+ $('diagReport').textContent=lastDiagnostic;
+}
+$('diagRefresh').onclick=renderDiagnostics;
+$('diagProbe').onclick=()=>{try{const v='診断実施 '+new Date().toISOString();localStorage.setItem(DIAG_KEY,v);if(localStorage.getItem(DIAG_KEY)!==v)throw Error('書き込み直後の読み取りが一致しません');renderDiagnostics();notify('診断専用キーへの書き込みと読み取りが一致しました')}catch(e){renderDiagnostics();notify('診断書き込み失敗：'+e.message)}};
+$('diagCopy').onclick=async()=>{renderDiagnostics();try{await navigator.clipboard.writeText(lastDiagnostic);notify('診断結果をコピーしました')}catch(e){const blob=new Blob([lastDiagnostic],{type:'text/plain;charset=utf-8'});download('my-classical-library-diagnostic.txt',blob);notify('クリップボードを使えないため、診断結果をテキスト保存しました')}};
+</script></body></html>
